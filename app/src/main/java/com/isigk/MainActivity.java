@@ -25,7 +25,7 @@ import retrofit2.Response;
 public class MainActivity extends AppCompatActivity {
 EditText edtCin,edtPassword;
 Button btnEntrer,btnInscrire;
-int index;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -34,36 +34,6 @@ int index;
     edtPassword=findViewById(R.id.edtMotDePasse);
     btnEntrer=findViewById(R.id.btnEntrer);
     btnInscrire=findViewById(R.id.btnInscrire);
-
-        // Spinner element
-        Spinner spinner =  findViewById(R.id.spinner);
-
-
-        // Spinner Drop down elements
-        List<String> utilisateurs = new ArrayList<String>();
-        utilisateurs.add("Encadreur");
-        utilisateurs.add("Etudiant");
-
-
-        // Creating adapter for spinner
-        ArrayAdapter<String> dataAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, utilisateurs);
-
-        // Drop down layout style - list view with radio button
-        dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-
-        // attaching data adapter to spinner
-        spinner.setAdapter(dataAdapter);
-        spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> adapterView, View view, int position, long l) {
-                index= position;
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> adapterView) {
-
-            }
-        });
 
 
 
@@ -77,27 +47,21 @@ int index;
             }else {
                 ApiRequest api= RetrofitService.getClient().create(ApiRequest.class);
                 //Instance Call Methode
-                Call<ResponseDataModel> Login=api.Login(edtCin.getText().toString(),""+index);
+                Call<ResponseDataModel> Login=api.Login(edtCin.getText().toString());
 Login.enqueue(new Callback<ResponseDataModel>() {
     @Override
     public void onResponse(Call<ResponseDataModel> call, Response<ResponseDataModel> response) {
         if(response.isSuccessful()){
             if(!response.body().getResult().isEmpty()) {
-                if (response.body().getResult().get(0).getnCin().equals(edtCin.getText().toString())) {
-                    if (response.body().getResult().get(0).getMotDePasse().equals(edtPassword.getText().toString())) {
+                if (response.body().getResult().get(0).getN_cin().equals(edtCin.getText().toString())) {
+                    if (response.body().getResult().get(0).getMot_de_passe().equals(edtPassword.getText().toString())) {
 
-                        if (index == 0) {
 
-                            Intent intent = new Intent(MainActivity.this, MenuEncadreur.class);
-                            intent.putExtra("idEncadreur", "" + response.body().getResult().get(0).getId());
-                            startActivity(intent);
-                        }
-                        if (index == 1) {
 
                             Intent intent = new Intent(MainActivity.this, MenuEtudiant.class);
-                            intent.putExtra("idEtudiant", "" + response.body().getResult().get(0).getId());
+                            intent.putExtra("idEtudiant", "" + response.body().getResult().get(0).getIdetudiant());
                             startActivity(intent);
-                        }
+
 
 
                     } else {
